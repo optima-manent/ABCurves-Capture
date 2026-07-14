@@ -184,6 +184,11 @@ if(ABCT_BUILD_TESTS)
                 "${CMAKE_SOURCE_DIR}/third_party/hidapi-0.15.0/windows/test/data/${fixture}.pp_data"
                 "${CMAKE_SOURCE_DIR}/third_party/hidapi-0.15.0/windows/test/data/${fixture}_expected.rpt_desc")
     endforeach()
+
+    add_test(NAME abct_build_identity
+        COMMAND "${CMAKE_COMMAND}"
+            "-DABCT_SOURCE_DIRECTORY=${CMAKE_SOURCE_DIR}"
+            -P "${CMAKE_SOURCE_DIR}/tests/build_identity_test.cmake")
 endif()
 
 add_library(abct_ui STATIC

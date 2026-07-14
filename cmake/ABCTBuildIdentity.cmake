@@ -20,8 +20,11 @@ function(abct_detect_source_identity out_revision out_dirty out_epoch out_id)
             OUTPUT_VARIABLE revision_output
             ERROR_QUIET
             OUTPUT_STRIP_TRAILING_WHITESPACE)
-        if(revision_result EQUAL 0 AND
-           revision_output MATCHES "^[0-9a-fA-F]{40}$")
+        string(LENGTH "${revision_output}" revision_length)
+        # CMake's regular-expression dialect does not support the {40}
+        # repetition syntax consistently, so validate the length separately.
+        if(revision_result EQUAL 0 AND revision_length EQUAL 40 AND
+           revision_output MATCHES "^[0-9a-fA-F]+$")
             string(TOLOWER "${revision_output}" revision)
 
             execute_process(
