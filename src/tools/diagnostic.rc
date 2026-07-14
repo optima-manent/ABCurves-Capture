@@ -1,0 +1,4 @@
+// RT_MANIFEST is numeric resource type 24. Spell it numerically here so the
+// resource compiler cannot emit a custom resource literally named
+// "RT_MANIFEST", which Windows would not recognize for elevation.
+1 24 "diagnostic.manifest"

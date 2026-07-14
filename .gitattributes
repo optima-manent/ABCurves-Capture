@@ -1,0 +1,27 @@
+* text=auto
+
+*.c text eol=lf
+*.cc text eol=lf
+*.cpp text eol=lf
+*.h text eol=lf
+*.hpp text eol=lf
+*.cmake text eol=lf
+CMakeLists.txt text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.ps1 text eol=crlf
+*.rc text eol=crlf
+*.manifest text eol=lf
+
+*.pcap binary
+*.abcr2 binary
+*.npz binary
+*.wav binary
+*.mp3 binary
+*.wma binary
+*.m4a binary
+*.aac binary
+*.mid binary
+*.midi binary
+*.pp_data binary
+*.rpt_desc binary

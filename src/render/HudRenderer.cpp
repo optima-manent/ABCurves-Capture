@@ -1,0 +1,184 @@
+// Adapted from the user-owned AIM TRAINER reference for this project.
+#include "render/HudRenderer.h"
+
+#include <algorithm>
+#include <array>
+#include <cctype>
+
+namespace {
+using Glyph = std::array<unsigned char, 7>;
+
+void AddRect(std::vector<RenderVertex>& vertices,
+             float left,
+             float top,
+             float right,
+             float bottom,
+             float r,
+             float g,
+             float b,
+             float a) {
+    vertices.push_back({left, top, r, g, b, a});
+    vertices.push_back({right, top, r, g, b, a});
+    vertices.push_back({right, bottom, r, g, b, a});
+    vertices.push_back({left, top, r, g, b, a});
+    vertices.push_back({right, bottom, r, g, b, a});
+    vertices.push_back({left, bottom, r, g, b, a});
+}
+
+Glyph GlyphFor(char value) {
+    switch (static_cast<char>(std::toupper(static_cast<unsigned char>(value)))) {
+    case 'A': return {0x0E, 0x11, 0x11, 0x1F, 0x11, 0x11, 0x11};
+    case 'B': return {0x1E, 0x11, 0x11, 0x1E, 0x11, 0x11, 0x1E};
+    case 'C': return {0x0E, 0x11, 0x10, 0x10, 0x10, 0x11, 0x0E};
+    case 'D': return {0x1E, 0x11, 0x11, 0x11, 0x11, 0x11, 0x1E};
+    case 'E': return {0x1F, 0x10, 0x10, 0x1E, 0x10, 0x10, 0x1F};
+    case 'F': return {0x1F, 0x10, 0x10, 0x1E, 0x10, 0x10, 0x10};
+    case 'G': return {0x0E, 0x11, 0x10, 0x17, 0x11, 0x11, 0x0F};
+    case 'H': return {0x11, 0x11, 0x11, 0x1F, 0x11, 0x11, 0x11};
+    case 'I': return {0x1F, 0x04, 0x04, 0x04, 0x04, 0x04, 0x1F};
+    case 'J': return {0x01, 0x01, 0x01, 0x01, 0x11, 0x11, 0x0E};
+    case 'K': return {0x11, 0x12, 0x14, 0x18, 0x14, 0x12, 0x11};
+    case 'L': return {0x10, 0x10, 0x10, 0x10, 0x10, 0x10, 0x1F};
+    case 'M': return {0x11, 0x1B, 0x15, 0x15, 0x11, 0x11, 0x11};
+    case 'N': return {0x11, 0x19, 0x15, 0x13, 0x11, 0x11, 0x11};
+    case 'O': return {0x0E, 0x11, 0x11, 0x11, 0x11, 0x11, 0x0E};
+    case 'P': return {0x1E, 0x11, 0x11, 0x1E, 0x10, 0x10, 0x10};
+    case 'Q': return {0x0E, 0x11, 0x11, 0x11, 0x15, 0x12, 0x0D};
+    case 'R': return {0x1E, 0x11, 0x11, 0x1E, 0x14, 0x12, 0x11};
+    case 'S': return {0x0F, 0x10, 0x10, 0x0E, 0x01, 0x01, 0x1E};
+    case 'T': return {0x1F, 0x04, 0x04, 0x04, 0x04, 0x04, 0x04};
+    case 'U': return {0x11, 0x11, 0x11, 0x11, 0x11, 0x11, 0x0E};
+    case 'V': return {0x11, 0x11, 0x11, 0x11, 0x0A, 0x0A, 0x04};
+    case 'W': return {0x11, 0x11, 0x11, 0x15, 0x15, 0x1B, 0x11};
+    case 'X': return {0x11, 0x11, 0x0A, 0x04, 0x0A, 0x11, 0x11};
+    case 'Y': return {0x11, 0x11, 0x0A, 0x04, 0x04, 0x04, 0x04};
+    case 'Z': return {0x1F, 0x01, 0x02, 0x04, 0x08, 0x10, 0x1F};
+    case '0': return {0x0E, 0x11, 0x13, 0x15, 0x19, 0x11, 0x0E};
+    case '1': return {0x04, 0x0C, 0x04, 0x04, 0x04, 0x04, 0x0E};
+    case '2': return {0x0E, 0x11, 0x01, 0x02, 0x04, 0x08, 0x1F};
+    case '3': return {0x1E, 0x01, 0x01, 0x0E, 0x01, 0x01, 0x1E};
+    case '4': return {0x02, 0x06, 0x0A, 0x12, 0x1F, 0x02, 0x02};
+    case '5': return {0x1F, 0x10, 0x10, 0x1E, 0x01, 0x01, 0x1E};
+    case '6': return {0x0E, 0x10, 0x10, 0x1E, 0x11, 0x11, 0x0E};
+    case '7': return {0x1F, 0x01, 0x02, 0x04, 0x08, 0x08, 0x08};
+    case '8': return {0x0E, 0x11, 0x11, 0x0E, 0x11, 0x11, 0x0E};
+    case '9': return {0x0E, 0x11, 0x11, 0x0F, 0x01, 0x01, 0x0E};
+    case ':': return {0x00, 0x04, 0x04, 0x00, 0x04, 0x04, 0x00};
+    case '/': return {0x01, 0x01, 0x02, 0x04, 0x08, 0x10, 0x10};
+    case '-': return {0x00, 0x00, 0x00, 0x1F, 0x00, 0x00, 0x00};
+    case '.': return {0x00, 0x00, 0x00, 0x00, 0x00, 0x0C, 0x0C};
+    case ',': return {0x00, 0x00, 0x00, 0x00, 0x00, 0x04, 0x08};
+    case '_': return {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1F};
+    case '|': return {0x04, 0x04, 0x04, 0x04, 0x04, 0x04, 0x04};
+    case '\'': return {0x04, 0x04, 0x08, 0x00, 0x00, 0x00, 0x00};
+    case '%': return {0x18, 0x19, 0x02, 0x04, 0x08, 0x13, 0x03};
+    case '+': return {0x00, 0x04, 0x04, 0x1F, 0x04, 0x04, 0x00};
+    case '<': return {0x02, 0x04, 0x08, 0x10, 0x08, 0x04, 0x02};
+    case '>': return {0x08, 0x04, 0x02, 0x01, 0x02, 0x04, 0x08};
+    case '[': return {0x0E, 0x08, 0x08, 0x08, 0x08, 0x08, 0x0E};
+    case ']': return {0x0E, 0x02, 0x02, 0x02, 0x02, 0x02, 0x0E};
+    case '(': return {0x02, 0x04, 0x08, 0x08, 0x08, 0x04, 0x02};
+    case ')': return {0x08, 0x04, 0x02, 0x02, 0x02, 0x04, 0x08};
+    case ' ': return {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+    default: return {0x1F, 0x11, 0x01, 0x02, 0x04, 0x00, 0x04};
+    }
+}
+
+void AppendChar(std::vector<RenderVertex>& vertices,
+                char value,
+                float x,
+                float y,
+                float cell,
+                RenderColor color) {
+    const Glyph glyph = GlyphFor(value);
+    constexpr float kInset = 0.00035f;
+    for (int row = 0; row < 7; ++row) {
+        for (int col = 0; col < 5; ++col) {
+            const bool on = (glyph[static_cast<std::size_t>(row)] & (1u << (4 - col))) != 0;
+            if (!on) {
+                continue;
+            }
+
+            const float left = x + static_cast<float>(col) * cell + kInset;
+            const float top = y - static_cast<float>(row) * cell - kInset;
+            AddRect(vertices,
+                    left,
+                    top,
+                    left + cell - (kInset * 2.0f),
+                    top - cell + (kInset * 2.0f),
+                    color.r,
+                    color.g,
+                    color.b,
+                    color.a);
+        }
+    }
+}
+
+float CellForScale(double scale) {
+    return 0.0060f * static_cast<float>(std::clamp(scale, 0.35, 2.4));
+}
+}
+
+namespace HudRenderer {
+
+float TextWidth(const std::string& text, double scale) {
+    const float cell = CellForScale(scale);
+    return static_cast<float>(text.size()) * cell * 6.0f;
+}
+
+float TextHeight(double scale) {
+    return CellForScale(scale) * 7.0f;
+}
+
+void AppendRect(std::vector<RenderVertex>& vertices, const RenderRect& rect) {
+    AddRect(vertices,
+            rect.left,
+            rect.top,
+            rect.right,
+            rect.bottom,
+            rect.color.r,
+            rect.color.g,
+            rect.color.b,
+            rect.color.a);
+}
+
+void AppendOutline(std::vector<RenderVertex>& vertices,
+                   float left,
+                   float top,
+                   float right,
+                   float bottom,
+                   float thickness,
+                   RenderColor color) {
+    AppendRect(vertices, {left, top, right, top - thickness, color});
+    AppendRect(vertices, {left, bottom + thickness, right, bottom, color});
+    AppendRect(vertices, {left, top, left + thickness, bottom, color});
+    AppendRect(vertices, {right - thickness, top, right, bottom, color});
+}
+
+void AppendText(std::vector<RenderVertex>& vertices, const RenderText& text) {
+    const float cell = CellForScale(text.scale);
+    const float char_advance = cell * 6.0f;
+    float x = text.x;
+    if (text.align == RenderTextAlign::Center) {
+        x -= TextWidth(text.text, text.scale) * 0.5f;
+    } else if (text.align == RenderTextAlign::Right) {
+        x -= TextWidth(text.text, text.scale);
+    }
+
+    for (char c : text.text) {
+        AppendChar(vertices, c, x, text.y, cell, text.color);
+        x += char_advance;
+    }
+}
+
+void AppendUiLayer(std::vector<RenderVertex>& vertices, const RenderUiLayer& layer) {
+    for (const RenderRect& rect : layer.rects) {
+        AppendRect(vertices, rect);
+    }
+    for (const RenderText& text : layer.texts) {
+        AppendText(vertices, text);
+    }
+}
+
+}
+

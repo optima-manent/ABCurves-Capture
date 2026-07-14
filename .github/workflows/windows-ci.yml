@@ -1,0 +1,32 @@
+name: Windows contracts
+
+on:
+  push:
+    branches:
+      - "**"
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: windows-contracts-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: windows-2022
+    timeout-minutes: 30
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Configure Windows x64
+        run: cmake --preset windows-x64
+
+      - name: Build Release
+        run: cmake --build --preset release
+
+      - name: Run hardware-free contracts
+        run: ctest --preset release
