@@ -16,7 +16,7 @@ gameplay lane (normal user)
 
 offline join lane
   USB reports + event QPC + clock anchors + render transform
-      -> event segments -> 1 kHz telemetry -> PHALM-R/ABCurves adapters
+      -> event segments -> 1 kHz telemetry -> ABCurves/downstream adapters
 ```
 
 Capture health, gameplay state, and event usability are different types. No
@@ -140,8 +140,8 @@ native timestamps or invalidate the raw session.
 The implemented interchange exporter derives consecutive 1 ms mouse bins,
 flat event/block tables, clock fits, and quality masks. It deliberately chooses
 no continuation cut or smoothing policy. Because raw reports and lifecycle
-boundaries are retained, future PHALM-R milestone-16 and legacy ABCurves seam
-builders can remain separate, versioned downstream adapters.
+boundaries are retained, future ABCurves and other seam builders can remain
+separate, versioned downstream adapters.
 
 ## Ownership and dependency direction
 

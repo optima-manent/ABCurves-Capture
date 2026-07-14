@@ -105,7 +105,7 @@ geometry, clicks, outcomes, sensitivity, report counts, and uncertainty masks
 remain available across those tables. Dense bins span the first through last
 decoded USB report; quiet padding to event/session boundaries is a downstream
 policy. The export identifies itself as an interchange view, not as a direct
-milestone-16 tensor.
+model-ready tensor.
 
 The integration invariant is:
 
@@ -117,9 +117,9 @@ crosshair[t + 1] = crosshair[t] + canonical_mouse_delta[t]
 
 Source capture and the implemented interchange exporter do not choose a B seam.
 A future downstream adapter must define and record its cut timestamp/tick and
-convention. Milestone-16 and legacy edge-based conventions can coexist under
-different adapter identifiers because both are derivable from the same report
-and event timeline.
+convention. Different edge and continuation conventions can coexist under
+versioned adapter identifiers because they are all derivable from the same
+report and event timeline.
 
 Likewise, NPZ prefix/future arrays, masks, smoothing, clipping, progress, speed,
 and acceleration are downstream products, not artifacts currently emitted by

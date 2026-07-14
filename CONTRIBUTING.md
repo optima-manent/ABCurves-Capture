@@ -1,18 +1,28 @@
 # Contributing
 
-Changes should preserve the separation between authoritative capture, gameplay,
-and offline derivation.
+Contributions are welcome. If you are planning a larger change, open an issue or
+join the [Discord](https://discord.gg/Nyf272vUjz) first so we can compare notes.
 
-- Never make Raw Input/USB equality a session-liveness condition.
-- Write selected endpoint source bytes before attempting HID decode.
-- Keep focus and presentation failures local to the active event.
-- Treat queue loss, device identity change, framing loss, corruption, and
-  storage failure as destructive.
-- Put smoothing, clipping, event selection, seam choice, and model-specific
-  validation in versioned offline adapters.
-- Do not persist native device paths, serial numbers, container IDs, account
-  information, or unrelated endpoint traffic.
+A few ideas guide the project:
 
-Run the Release build and full CTest suite before submitting a change. Add a
-contract test for every scientific, recovery, or failure-policy change. Hardware
-changes also require the relevant scenarios in `docs/TESTING.md`.
+- Keep the original USB and gameplay records intact. Smoothing, clipping, event
+  selection, and model-specific transforms belong in offline tools.
+- Treat Raw Input as the responsive gameplay input and USBPcap as the recorded
+  hardware stream; they do not need to produce identical batches.
+- Keep failures local when possible. A sound, focus, or rendering issue should
+  not discard an otherwise healthy capture.
+- Do not add usernames, serial numbers, native device paths, or unrelated device
+  traffic to session metadata.
+- Add a focused test for changes to capture, recovery, timing, or data formats.
+
+Before opening a pull request:
+
+```powershell
+cmake --preset windows-x64
+cmake --build --preset release
+ctest --preset release
+```
+
+For hardware-related changes, mention the Windows version, USBPcap version,
+mouse/receiver type, connection, and polling rate you tested. Please use
+synthetic or scrubbed fixtures rather than uploading a participant session.

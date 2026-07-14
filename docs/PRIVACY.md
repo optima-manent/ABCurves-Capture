@@ -1,36 +1,35 @@
-# Privacy and participant control
+# Privacy
 
-The public collector stores mouse/target research evidence locally and never
-uploads automatically. Submission is a separate, explicit participant action.
+## The short version
 
-The stable `user_id` used for leakage-safe research splits is a random 128-bit
-local pseudonym. It is not derived from a Windows account, SID, hostname,
-device path, serial number, IP address, or hardware fingerprint. The participant
-can reset it by deleting the local `participant_id.txt`; future sessions will
-then no longer group with earlier ones.
+Sessions stay on the participant's computer until they choose to share the final
+ZIP. The app has no automatic upload step.
 
-The session includes sanitized VID/PID/product and optional descriptor evidence
-used to decode the selected mouse. The app does not intentionally copy native
-device paths, container IDs, device serials, or usernames into session metadata,
-and it does not capture screenshots, audio recordings, personal files, or
-detailed Windows movement from other mice.
+It records the selected mouse or USB receiver, the aim-trainer events, timing,
+settings, and a random participant ID. It does not take screenshots, record a
+microphone, read personal files, or use a Windows account name as the participant
+ID.
 
-The short mouse check transiently observes interrupt traffic on the selected
-USB root so it can correct Windows/USBPcap address disagreements. Those
-broad-root payloads are neither written to disk nor returned to the participant
-process; the helper keeps only bounded counters and payload-change state in
-memory until it exits.
+## Raw USB capture
 
-After that check, USBPcap filters by the observed mouse device address in the
-kernel. The raw artifact deliberately retains every record from that one
-address so unusual mouse formats remain recoverable offline. That raw stream can
-contain control, vendor, descriptor, or serial bytes exchanged with the selected
-device even though those values are not copied into app metadata.
+The PCAP keeps the selected device's raw USB traffic so unusual mice can still be
+decoded later. That can include control, vendor, descriptor, or serial bytes
+exchanged with the device even though the app does not copy those values into its
+own session metadata.
 
-A shared mouse-and-keyboard receiver can also contribute the keyboard's actual
-key and media-button reports from that physical receiver. The collector does not
-interpret them as keyboard input, but they remain in the raw PCAP and may be
-decoded later. Participants should prefer a mouse-only receiver and must not
-type passwords, messages, or other private text during collection, including
-while the trainer is paused or in the background. The in-app consent screen
-discloses this before collection.
+Some wireless receivers combine a mouse and keyboard. In that case, keyboard
+reports from the shared receiver may also be present in the PCAP and could be
+decoded later. Use a mouse-only receiver when possible and avoid typing private
+text during collection, including while the trainer is paused or in the
+background.
+
+The short mouse check briefly watches activity on the relevant USB root to match
+the Windows mouse with its USBPcap address. That broader traffic is kept in
+memory only for the check and is not written to the session.
+
+## Participant ID
+
+The local `user_id` is a random 128-bit value used to group sessions from the
+same participant. It is not based on a username, SID, hostname, IP address, or
+hardware fingerprint. Deleting `participant_id.txt` creates a new identity for
+future sessions.

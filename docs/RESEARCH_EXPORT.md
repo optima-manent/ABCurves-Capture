@@ -48,8 +48,8 @@ the clock mapping and source evidence.
 
 ## Scope
 
-The interchange adapter is named `abcurves.native_count_1khz.v1`. It does not
-claim to be a ready-made PHALM-R milestone-16 tensor or an ABCurves training
-sample. It selects no B boundary, prefix, future horizon, smoothing, clipping,
-or event-exclusion policy. Those research choices remain downstream and are
-recorded by the adapter that makes them.
+The interchange adapter is named `abcurves.native_count_1khz.v1`. It is a clean
+research interchange, not a ready-made ABCurves training sample. It selects no
+B boundary, prefix, future horizon, smoothing, clipping, or event-exclusion
+policy. Those research choices remain downstream and are recorded by the
+adapter that makes them.

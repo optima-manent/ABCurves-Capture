@@ -1,38 +1,34 @@
-# Installing the participant package
+# Installation
 
-ABCurves Capture Trainer is distributed as a portable Windows x64 ZIP. It does
-not install a service and it never uploads data automatically.
+ABCurves Capture Trainer is a portable Windows x64 app. It does not install a
+service and it does not upload sessions automatically.
 
-1. Install USBPcap 1.5.4.0 from its
-   [official distribution](https://desowin.org/usbpcap/) and restart Windows if
-   its installer requests it.
-2. Download the Windows x64 ZIP from the
-   [ABCurves Capture releases](https://github.com/optima-manent/ABCurves-Capture/releases)
-   page and extract it to a normal local folder. Do not run the application from
-   inside the ZIP and do not separate the executable files.
-3. Open `ABCurves Capture Trainer.exe`.
-4. Windows may ask for permission during the bounded mouse check and again when
-   collection starts. Each helper launch prompts at most once and is never
-   retried automatically. The trainer itself remains a normal-user process.
+## Release package
 
-The capture path supports a direct USB mouse or a mouse using a USB receiver.
-A native Bluetooth-only mouse, PS/2 mouse, or touchpad is not a supported data
-source. Prefer a mouse-only receiver. If a keyboard shares the receiver, its
-key reports can be included in the raw selected-device capture; do not type
-passwords, messages, or other private text while the session is running.
+1. Install [USBPcap 1.5.4.0](https://desowin.org/usbpcap/) and restart Windows if
+   asked.
+2. Download the latest Windows ZIP from
+   [GitHub Releases](https://github.com/optima-manent/ABCurves-Capture/releases).
+3. Extract the complete ZIP to a normal local folder.
+4. Open `ABCurves Capture Trainer.exe`.
 
-Version 0.4.1 release-candidate executables are not Authenticode signed. Windows
-may therefore show an unknown-publisher or reputation warning. Only use the ZIP
-from the project's GitHub Releases page and compare its SHA-256 with the
-attached `.sha256` file before running it. Code signing is strongly recommended
-before broad participant distribution.
+Keep the helper executables beside the main app. Windows may ask for permission
+during the initial mouse check and again when recording begins; the trainer
+itself continues to run as a normal desktop app.
 
-Keep `abct_capture_helper.exe` and, when present, `abct_probe_helper.exe` beside
-the participant application. `abct_session_tool.exe` is an offline validation
-utility. `abct_research_export.exe` creates the organizer-side research
-interchange. Both may be left in the same folder.
+The current release-candidate binaries are not code-signed, so Windows may show
+an unknown-publisher or reputation warning. Download only from this repository's
+Releases page and use the attached `.sha256` file if you want to verify the ZIP.
 
-The package includes `BUILD_INFO.json` and `SHA256SUMS`. Study organizers can
-use `scripts/Test-ReleasePackage.ps1` from the source repository to verify the
-archive, its inventory, its x64 executables, and the command-line tools before
-distribution.
+## Supported connections
+
+Use a direct USB mouse or a mouse with a USB receiver. Native Bluetooth-only
+mice, PS/2 mice, and touchpads are not supported capture sources.
+
+If a keyboard shares the receiver, its reports may appear in the raw capture.
+Prefer a mouse-only receiver and avoid typing private text while a session is
+running, including while the trainer is paused or in the background.
+
+## Build from source
+
+The complete source-build commands are in the main [README](../README.md#build-it-from-source).

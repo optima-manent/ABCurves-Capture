@@ -90,14 +90,14 @@ A candidate is suitable for public collection only when:
 5. ZIP and directory validation independently pass, and extraction contains no
    unlisted file. Shared-receiver traffic disclosed by the consent screen is
    retained only within the selected physical USB device address.
-6. PHALM-R milestone-16 adapter parity fixtures pass for axis, 1 ms bin phase,
+6. The 1 ms export parity fixtures pass for axis direction, bin phase,
    pre-delta integration, and continuation-cut conventions.
 7. A full routine at the highest qualified report rate has a measured worst-case
    session size, and the startup/free-space thresholds leave enough margin to
    finish and seal it without wasting a participant run.
-8. The distribution has an Authenticode signing plan, or the unsigned Windows
-   reputation-warning flow and external release SHA-256 verification have been
-   participant-tested and documented for the exact candidate.
+8. If the executables are unsigned, the Windows download-warning flow and
+   release SHA-256 check have been tried on the exact package participants will
+   receive.
 
 Decode warnings, clock residuals, polling variation, and Raw Input/USB timing
 differences are not release failures when the selected raw source is intact and
