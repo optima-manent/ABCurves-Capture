@@ -105,6 +105,17 @@ Validate a returned session directory or ZIP:
 .\build\windows-x64\Release\abct_session_tool.exe validate <path>
 ```
 
+For optional manual QA, the extraction-free Python inspector can open or accept
+a dropped `_SEND_THIS.zip`, replay each event's authoritative mouse path, and
+save reviewer notes beside the ZIP:
+
+```powershell
+python .\tools\inspect_capture_session.py <session_SEND_THIS.zip>
+```
+
+The inspector is a viewing aid, not a replacement for organizer-side safety and
+pool-admission validation.
+
 Create a deterministic 1 ms research export from a completed session:
 
 ```powershell
